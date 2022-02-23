@@ -70,11 +70,11 @@ module Spree
     end
 
     private
-
+    # Da chuyen tu item.product.name -> get_product_name
     def line_item(item)
       {
-          Name: item.product.name,
-          Number: item.variant.sku,
+          Name: "#{get_product_name(item.product)} #{item.product.id}", 
+          Number: item.variant.id,
           Quantity: item.quantity,
           Amount: {
               currencyID: item.order.currency,
@@ -83,7 +83,49 @@ module Spree
           ItemCategory: "Physical"
       }
     end
+    
 
+
+    #Phung them vao 17/12/2021
+    def get_product_name(product)
+        begin
+          product_type = product.product_type
+          if product_type.blank?
+            return product.name
+          elsif product_type.include? "mockup"
+            return "T-Shirt"
+          elsif product_type.include? "hoodie"
+            return "Hoodie"
+          elsif product_type.include? "sweatshirt"
+            return "Sweatshirt"
+          elsif product_type.include? "sleeve"
+            return "Long Sleeve T-Shirt"
+          elsif product_type.include? "tshirt"
+            return "T-Shirt"
+          elsif product_type.include? "tank_top"
+            return "Tank Top"
+          elsif product_type.include? "canvas"
+            return "Poster, Canvas, Framed Wall Art"
+          elsif product_type.include? "ornament"
+            return "Ornament"
+          elsif product_type.include? "hawaiian"
+            return "Hawaiian Shirt"
+          elsif product_type.include? "flag"
+            return "Flag"
+          elsif product_type.include? "blanket"
+            return "Blanket"
+          elsif product_type.include? "sweatpant"
+            return "Sweatpant"
+          elsif product_type.include? "bed"
+            return "Bedding Set"
+          else
+            return product.name
+          end
+        rescue Exception => e
+          return product.name
+        end
+      end
+    ##
     def express_checkout_request_details order, items
       { SetExpressCheckoutRequestDetails: {
           InvoiceID: order.number,
